@@ -15,5 +15,6 @@ module.exports = {
     },
     devServer: {
         quiet: true
-    }
+    },
+    devtool: 'source-map'
 };
