@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {Constants} from './Constants';
 import Header from './Header';
 import Board from './Board';
-import {createBoard} from './Utils';
+import {createBoard, countMines} from './Utils';
 
 let Minesweeper = React.createClass({
     getInitialState: function () {
@@ -33,6 +33,7 @@ let Minesweeper = React.createClass({
                 status: Constants.RUNNIG
             })
         }
+        let mineCount = countMines(this.state.board, cell);
         this.setState({
             board: Object.assign(
                 {},
@@ -40,7 +41,10 @@ let Minesweeper = React.createClass({
                 {[cell.index]: Object.assign(
                     {},
                     cell,
-                    {isOpened: true})}
+                    {
+                        isOpened: true,
+                        count: mineCount
+                    })}
             )
         });
     },
