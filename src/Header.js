@@ -18,7 +18,7 @@ let Header = React.createClass({
             clearInterval(this.interval);
             this.setState({time:0});
         }
-        if (newProps.status === Constants.GAME_OVER) {
+        if (newProps.status === Constants.GAME_OVER || newProps.status === Constants.FINISHED) {
             clearInterval(this.interval);
         }
     },
