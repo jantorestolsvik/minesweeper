@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import {Constants} from './Constants';
 import Header from './Header';
 import Board from './Board';
-import {createBoard, countMines} from './Utils';
+import {createBoard, countMines, openRecursivly} from './Utils';
 
 let Minesweeper = React.createClass({
     getInitialState: function () {
@@ -34,17 +34,23 @@ let Minesweeper = React.createClass({
             })
         }
         let mineCount = countMines(this.state.board, cell);
+        let changedCells = {
+            [cell.index]: Object.assign(
+                {},
+                cell,
+                {
+                    isOpened: true,
+                    count: mineCount
+                })
+        };
+        if (mineCount === 0) {
+            openRecursivly(this.state.board, cell, changedCells)
+        }
         this.setState({
             board: Object.assign(
                 {},
                 this.state.board,
-                {[cell.index]: Object.assign(
-                    {},
-                    cell,
-                    {
-                        isOpened: true,
-                        count: mineCount
-                    })}
+                changedCells
             )
         });
     },
@@ -56,10 +62,12 @@ let Minesweeper = React.createClass({
             board: Object.assign(
                 {},
                 this.state.board,
-                {[cell.index]: Object.assign(
-                    {},
-                    cell,
-                    {hasFlag: true})}
+                {
+                    [cell.index]: Object.assign(
+                        {},
+                        cell,
+                        {hasFlag: true})
+                }
             )
         });
     },

@@ -36,10 +36,39 @@ export const countMines = function (board, cell) {
     for(var row = -1; row <= 1; row++){
         for(var col = -1; col <= 1; col++){
             let newIndex = `${index[0]+row},${index[1]+col}`
-            if(index[0] + row >= 0 && index[1] + col >= 0 && index[0] + row < board.rows && index[1] + col < board.columns && board[newIndex].hasMine){
+            if(index[0] + row >= 0 && index[1] + col >= 0 && index[0] + row < board.rows && index[1] + col < board.columns && !(row === 0 && col === 0) && board[newIndex].hasMine){
                 aroundMinesNum ++;
             }
         }
     }
     return aroundMinesNum;
-}
+};
+
+export const openRecursivly = function (board, cell, changedCells) {
+    let index = cell.index.split(",").map((numberString) => {
+        return parseInt(numberString);
+    });
+    for(var row = -1; row <= 1; row++){
+        for(var col = -1; col <= 1; col++){
+            let newIndex = `${index[0]+row},${index[1]+col}`
+            if(
+                index[0] + row >= 0 &&
+                index[1] + col >= 0 &&
+                index[0] + row < board.rows &&
+                index[1] + col < board.columns &&
+                !(row === 0 && col === 0) &&
+                !board[newIndex].isOpened &&
+                typeof changedCells[newIndex] === "undefined"
+            ){
+                let mineCount = countMines(board, board[newIndex]);
+                changedCells[newIndex] = Object.assign({}, board[newIndex], {
+                    isOpened: true,
+                    count: mineCount
+                });
+                if (mineCount === 0) {
+                    openRecursivly(board, board[newIndex], changedCells)
+                }
+            }
+        }
+    }
+};
